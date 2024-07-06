@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="tests/bootstrap.php" backupGlobals="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">tests</directory>
+    </exclude>
+  </coverage>
+  <php>
+    <env name="PLUGIN_FILE" value="activity-map.php"/>
+    <server name="DB_NAME" value="wp-tests"/>
+    <server name="DB_USER" value="root"/>
+    <server name="DB_PASS" value="root2020"/>
+    <server name="DB_HOST" value="127.0.0.1"/>
+
+  </php>
+  <testsuites>
+    <testsuite name="Activity Map Tests">
+      <directory prefix="test-" suffix=".php">./tests/</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

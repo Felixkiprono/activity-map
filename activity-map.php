@@ -85,6 +85,9 @@ final class AM_Main
 
 	public $hooks;
 
+	public $db_store;
+
+
 	/**
 	 * Load text domain
 	 */
@@ -92,7 +95,6 @@ final class AM_Main
 	{
 		load_plugin_textdomain('activity-map');
 	}
-
 
 	/**
 	 * Construct
@@ -102,7 +104,7 @@ final class AM_Main
 		global $wpdb;
 
 		$this->hooks         = new AM_Hooks();
-		$this->db_store         = new AM_Db_Store();
+		$this->db_store      = new AM_Db_Store();
 
 		// set up our DB name
 		$wpdb->activity_log = $wpdb->prefix . 'activity_map';
