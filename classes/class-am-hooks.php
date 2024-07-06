@@ -16,6 +16,9 @@ class AM_Hooks
 		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-attachments.php');
 		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-plugins.php');
 		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-export.php');
+		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-menus.php');
+		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-themes.php');
+		include(plugin_dir_path(ACTIVITY_MAP__FILE__) . '/hooks/class-am-hook-options.php');
 
 		new Am_Hook_Posts();
 		new Am_Hook_Users();
@@ -23,5 +26,8 @@ class AM_Hooks
 		new Am_Hook_Attachments();
 		new Am_Hook_Plugins();
 		new Am_Hook_Export();
+		new Am_Hook_Menus();
+		new Am_Hook_Themes();
+		new Am_Hook_Options();
 	}
 }

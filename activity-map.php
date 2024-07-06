@@ -70,7 +70,7 @@ function deactivate_activity_map() {
 }
 
 register_activation_hook( __FILE__, 'activate_activity_map' );
-// register_uninstall_hook( __FILE__, 'deactivate_activity_map' );
+register_deactivation_hook( __FILE__, 'deactivate_activity_map' );
 
 /**
  * The core plugin class that is used to define internationalization,

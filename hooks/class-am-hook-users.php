@@ -1,9 +1,9 @@
 <?php
-if (!defined('ABSPATH')) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit;
 
 class Am_Hook_Users
 {
-    
+
     /**
      * hooks_to_user_register
      *
@@ -12,18 +12,27 @@ class Am_Hook_Users
      */
     public function hooks_to_user_register($user_id)
     {
+        if (!$user_id) {
+            return;
+        }
         $user = get_user_by('id', $user_id);
-        am_add_activity(
-            array(
-                'action' => 'registered',
-                'event_type' => 'Users',
-                'event_subtype' => 'Profile',
-                'event_id' => $user->ID,
-                'event_name' =>   $user->user_nicename,
-            )
-        );
+
+
+        if ($user) {
+            $meta = json_encode($user);
+            am_add_activity(
+                array(
+                    'action' => 'registered',
+                    'event_type' => 'Users',
+                    'event_subtype' => 'Profile',
+                    'event_id' => $user->ID,
+                    'event_name' =>   $user->user_nicename,
+                    'metadata' => $meta
+                )
+            );
+        }
     }
-    
+
     /**
      * hooks_to_delete_user
      *
@@ -32,18 +41,25 @@ class Am_Hook_Users
      */
     public function hooks_to_delete_user($user_id)
     {
+        if (!$user_id) {
+            return;
+        }
         $user = get_user_by('id', $user_id);
-        am_add_activity(
-            array(
-                'action' => 'deleted',
-                'event_type' => 'Users',
-                'event_subtype' => 'Profile',
-                'event_id' => $user->ID,
-                'event_name' =>   $user->user_nicename,
-            )
-        );
+        if ($user) {
+            $meta = json_encode($user);
+            am_add_activity(
+                array(
+                    'action' => 'deleted',
+                    'event_type' => 'Users',
+                    'event_subtype' => 'Profile',
+                    'event_id' => $user->ID,
+                    'event_name' =>   $user->user_nicename,
+                    'metadata' => $meta
+                )
+            );
+        }
     }
-    
+
     /**
      * hooks_to_wp_login
      *
@@ -53,8 +69,8 @@ class Am_Hook_Users
     public function hooks_to_wp_login($user)
     {
         if ($user) {
-
             $logged_user = get_user_by('login',  $user);
+            $meta = json_encode($logged_user);
             if ($logged_user) {
                 am_add_activity(
                     array(
@@ -63,6 +79,7 @@ class Am_Hook_Users
                         'event_subtype' => 'Login',
                         'event_id' => $logged_user->ID,
                         'event_name' =>  $logged_user->user_nicename,
+                        'metadata' => $meta
                     )
                 );
             }
@@ -78,18 +95,26 @@ class Am_Hook_Users
      */
     public function hooks_to_profile_update($user_id)
     {
+        if (!$user_id) {
+            return;
+        }
+
         $user = get_user_by('id', $user_id);
-        am_add_activity(
-            array(
-                'action' => 'updated',
-                'event_type' => 'Users',
-                'event_subtype' => 'Profile',
-                'event_id' => $user->ID,
-                'event_name' =>  $user->user_nicename,
-            )
-        );
+        if ($user) {
+            $meta = json_encode($user);
+            am_add_activity(
+                array(
+                    'action' => 'updated',
+                    'event_type' => 'Users',
+                    'event_subtype' => 'Profile',
+                    'event_id' => $user->ID,
+                    'event_name' =>  $user->user_nicename,
+                    'metadata' => $meta
+                )
+            );
+        }
     }
-    
+
     /**
      * hooks_to_wrong_password
      *
@@ -131,7 +156,7 @@ class Am_Hook_Users
             );
         }
     }
-    
+
     /**
      * __construct
      *

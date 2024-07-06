@@ -1,5 +1,5 @@
 <?php
-if (!defined('ABSPATH')) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit;
 
 class Am_Hook_Comments
 {
@@ -13,8 +13,11 @@ class Am_Hook_Comments
      */
     public function hooks_to_comment($comment_ID, $comment_object = null)
     {
+        if (!$comment_ID) {
+            return;
+        }
         if (is_null($comment_object)) {
-            $comment_object = get_comment($comment_id);
+            $comment_object = get_comment($comment_ID);
         }
         $meta = json_encode($comment_object);
         switch (current_filter()) {
@@ -67,18 +70,22 @@ class Am_Hook_Comments
      */
     public function hooks_to_transition_comment_status($current_status, $previous_status, $comment)
     {
-        $comment = get_comment($comment->comment_ID);
-        $meta = json_encode($comment);
-        $log =  array(
-            'action' => $current_status,
-            'event_type' => 'Comments',
-            'event_subtype' => get_post_type($comment->comment_ID),
-            'event_name' => esc_html(get_the_title($comment->comment_ID)),
-            'event_id' => $comment->comment_ID,
-            'metadata' =>  $meta
-        );
+        if (empty($comment)) {
+            return;
+        }
+        if (!is_null($comment->comment_ID)) {
+            $meta = json_encode($comment);
+            $log =  array(
+                'action' => $current_status,
+                'event_type' => 'Comments',
+                'event_subtype' => get_post_type($comment->comment_ID),
+                'event_name' => esc_html(get_the_title($comment->comment_ID)),
+                'event_id' => $comment->comment_ID,
+                'metadata' =>  $meta
+            );
 
-        $this->insert_comment_log($log);
+            $this->insert_comment_log($log);
+        }
     }
 
     /**
@@ -89,16 +96,18 @@ class Am_Hook_Comments
      */
     protected function insert_comment_log($comment_log)
     {
-        am_add_activity(
-            array(
-                'action' => $comment_log['action'],
-                'event_type' => $comment_log['event_type'],
-                'event_subtype' => $comment_log['event_subtype'],
-                'event_name' => $comment_log['event_name'],
-                'event_id' => $comment_log['event_id'],
-                'metadata' => $comment_log['metadata']
-            )
-        );
+        if (!empty($comment_log)) {
+            am_add_activity(
+                array(
+                    'action' => $comment_log['action'],
+                    'event_type' => $comment_log['event_type'],
+                    'event_subtype' => $comment_log['event_subtype'],
+                    'event_name' => $comment_log['event_name'],
+                    'event_id' => $comment_log['event_id'],
+                    'metadata' => $comment_log['metadata']
+                )
+            );
+        }
     }
 
     /**

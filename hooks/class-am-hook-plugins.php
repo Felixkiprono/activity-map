@@ -1,5 +1,5 @@
 <?php
-if (!defined('ABSPATH')) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit;
 
 class Am_Hook_Plugins
 {
