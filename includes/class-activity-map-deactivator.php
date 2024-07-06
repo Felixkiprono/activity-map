@@ -20,7 +20,8 @@
  * @subpackage Activity_Map/includes
  * @author     Sergei Kiprono <felixkipronovich@gmail.com>
  */
-class Activity_Map_Deactivator {
+class Activity_Map_Deactivator
+{
 
 	/**
 	 * Short Description. (use period)
@@ -29,8 +30,9 @@ class Activity_Map_Deactivator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function deactivate() {
+	public static function deactivate()
+	{
 
+	
 	}
-
 }

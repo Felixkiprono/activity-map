@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Activity Map
  * Plugin URI:        https://activity-map.com
- * Description:       Collect activities triggered by users across the site
+ * Description:       The WordPress Activity Map plugin is a comprehensive tool designed to help you monitor and analyze user interactions on your WordPress site.
  * Version:           1.0.0
  * Author:            Sergei Kiprono
  * Author URI:        https://activity-map/sergei/
@@ -26,16 +26,30 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if (!defined('WPINC')) {
 	die;
 }
+
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
+define('ACTIVITY_MAP__FILE__', __FILE__);
+define('ACTIVITY_MAP_BASE', plugin_basename(ACTIVITY_MAP__FILE__));
 
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'ACTIVITY_MAP_VERSION', '1.0.0' );
+define('ACTIVITY_MAP_VERSION', '1.0.0');
+
+
+include('classes/class-am-hooks.php');
+include('classes/class-am-db-store.php');
+
+include('includes/class-activity-map-activator.php');
+include('includes/class-activity-map-deactivator.php');
+
+
 
 /**
  * The code that runs during plugin activation.
@@ -62,21 +76,47 @@ register_deactivation_hook( __FILE__, 'deactivate_activity_map' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-activity-map.php';
+require plugin_dir_path(__FILE__) . 'includes/class-activity-map.php';
 
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function run_activity_map() {
+final class AM_Main
+{
 
-	$plugin = new Activity_Map();
-	$plugin->run();
+	private static $_instance = null;
 
+	public $hooks;
+
+	public $db_store;
+
+
+	/**
+	 * Load text domain
+	 */
+	public function load_textdomain()
+	{
+		load_plugin_textdomain('activity-map');
+	}
+
+	/**
+	 * Construct
+	 */
+	protected function __construct()
+	{
+		global $wpdb;
+
+		$this->hooks         = new AM_Hooks();
+		$this->db_store      = new AM_Db_Store();
+
+		// set up our DB name
+		$wpdb->activity_log = $wpdb->prefix . 'activity_map';
+		add_action('plugins_loaded', array(&$this, 'load_textdomain'));
+	}
+
+	public static function instance()
+	{
+		if (is_null(self::$_instance))
+			self::$_instance = new AM_Main();
+		return self::$_instance;
+	}
 }
-run_activity_map();
+
+AM_Main::instance();

@@ -1,0 +1,32 @@
+<phpunit
+		bootstrap="tests/bootstrap.php"
+		backupGlobals="false"
+		colors="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+>
+	<php>
+		<env name="PLUGIN_FILE" value="activity-map.php" />
+        <server name="DB_NAME" value="wp-tests"/>
+        <server name="DB_USER" value="root"/>
+        <server name="DB_PASS" value="root2020"/>
+        <server name="DB_HOST" value="127.0.0.1"/>
+	</php>
+
+	<testsuites>
+		<testsuite name="Activity Map Tests">
+			<directory prefix="test-" suffix=".php">./tests/</directory>
+		</testsuite>
+	</testsuites>
+
+	<filter>
+		<whitelist>
+			<directory suffix=".php">./</directory>
+			<exclude>
+				<directory suffix=".php">tests</directory>
+			</exclude>
+		</whitelist>
+	</filter>
+
+</phpunit>
