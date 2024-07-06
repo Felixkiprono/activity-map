@@ -16,8 +16,8 @@
  * This file may be updated more in future version of the Boilerplate; however, this is the
  * general skeleton and outline for how the file should work.
  *
- * For more information, see the following discussion:
- * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
+ * 
+ * 
  *
  * @link       https://activity-map/sergei
  * @since      1.0.0
@@ -26,6 +26,22 @@
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if (!defined('WP_UNINSTALL_PLUGIN')) {
 	exit;
 }
+
+/**
+ * uninstall_activity_map
+ * Delete the activity map table
+ * @return void
+ */
+function uninstall_activity_map()
+{
+	global $wpdb;
+	$admin_role = get_role('administrator');
+	$wpdb->query("DROP TABLE IF EXISTS `{$wpdb->prefix}activity_map`;");
+	delete_option('activity_map_db_version');
+}
+
+
+uninstall_activity_map();

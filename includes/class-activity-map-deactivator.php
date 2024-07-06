@@ -33,11 +33,6 @@ class Activity_Map_Deactivator
 	public static function deactivate()
 	{
 
-		global $wpdb;
-		$admin_role = get_role('administrator');
-		if ($admin_role) {
-			$wpdb->query("DROP TABLE IF EXISTS `{$wpdb->prefix}activity_map`;");
-		}
-		delete_option('activity_map_db_version');
+	
 	}
 }

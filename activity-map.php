@@ -50,6 +50,7 @@ include('includes/class-activity-map-activator.php');
 include('includes/class-activity-map-deactivator.php');
 
 
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-activity-map-activator.php
@@ -69,7 +70,7 @@ function deactivate_activity_map() {
 }
 
 register_activation_hook( __FILE__, 'activate_activity_map' );
-register_uninstall_hook( __FILE__, 'deactivate_activity_map' );
+// register_uninstall_hook( __FILE__, 'deactivate_activity_map' );
 
 /**
  * The core plugin class that is used to define internationalization,
