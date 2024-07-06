@@ -108,7 +108,6 @@ final class AM_Main
 
 		// set up our DB name
 		$wpdb->activity_log = $wpdb->prefix . 'activity_map';
-
 		add_action('plugins_loaded', array(&$this, 'load_textdomain'));
 	}
 
