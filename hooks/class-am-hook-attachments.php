@@ -21,7 +21,7 @@ class Am_Hook_Attachments
             'action' => 'uploaded',
             'event_type' => 'Attachments',
             'event_subtype' => $attachment->post_type,
-            'event_name' => esc_html(get_the_title($attachment->ID)),
+            'event_name' =>  $attachment->post_type.'_uploaded_'.esc_html(get_the_title($attachment->ID)),
             'event_id' => $id,
             'metadata' => $meta
         ));
@@ -44,7 +44,7 @@ class Am_Hook_Attachments
             'action' => 'edited',
             'event_type' => 'Attachments',
             'event_subtype' => $attachment->post_type,
-            'event_name' => esc_html(get_the_title($attachment->ID)),
+            'event_name' =>  $attachment->post_type.'_edited_'.esc_html(get_the_title($attachment->ID)),
             'event_id' => $id,
             'metadata' => $meta
         ));
@@ -67,7 +67,7 @@ class Am_Hook_Attachments
             'action' => 'deleted',
             'event_type' => 'Attachments',
             'event_subtype' => $attachment->post_type,
-            'event_name' => esc_html(get_the_title($attachment->ID)),
+            'event_name' =>  $attachment->post_type.'_deleted_'.esc_html(get_the_title($attachment->ID)),
             'event_id' => $id,
             'metadata' => $meta
         ));
