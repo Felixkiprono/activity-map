@@ -34,7 +34,7 @@ class AM_Db_Store
 		if ($user_id) {
 			return $user_id;
 		}
-		return null;
+		return 0;
 	}
 
 	/**

@@ -43,23 +43,23 @@ class Am_Hook_Posts
         return $title;
     }
 
-    public function hooks_to_transition_post_status($new_status, $old_status, $post)
+    public function hooks_to_transition_post_status($current_status, $previous_status, $post)
     {
-        if ('auto-draft' === $old_status && ('auto-draft' !== $new_status && 'inherit' !== $new_status)) {
-            // when page created
-            $action = 'created';
-        } elseif ('auto-draft' === $new_status || ('new' === $old_status && 'inherit' === $new_status)) {
+        if ('auto-draft' === $previous_status && ('auto-draft' !== $current_status && 'inherit' !== $current_status)) {
+            // When the page is created
+            $event = 'created';
+        } elseif ('auto-draft' === $current_status || ('new' === $previous_status && 'inherit' === $current_status)) {
             return;
-        } elseif ('trash' === $new_status) {
-            // if page was deleted.
-            $action = 'trashed';
-        } elseif ('trash' === $old_status) {
-            $action = 'restored';
+        } elseif ('trash' === $current_status) {
+            // If the page was deleted
+            $event = 'trashed';
+        } elseif ('trash' === $previous_status) {
+            // If the page was restored from trash
+            $event = 'restored';
         } else {
-            // finaly page updated.
-            $action = 'updated';
+            // Finally, the page was updated
+            $event = 'updated';
         }
-
         if (wp_is_post_revision($post->ID))
             return;
 
@@ -68,7 +68,7 @@ class Am_Hook_Posts
 
         am_add_activity(
             array(
-                'action' => $action,
+                'action' => $event,
                 'event_type' => 'Posts',
                 'event_subtype' => $post->post_type,
                 'event_id' => $post->ID,
