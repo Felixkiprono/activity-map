@@ -1,5 +1,4 @@
 /vendor/
 composer.lock
 phpunit.xml.bak
-/.phpunit.result.cache
-./.phpunit.result.cache
+.phpunit.result.cache
