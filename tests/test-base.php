@@ -85,4 +85,6 @@ class Activity_Map_Test_Base extends WP_UnitTestCase
         );
         $this->assertNotEmpty($row);
     }
+
+
 }
