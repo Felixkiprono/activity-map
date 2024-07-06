@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Activity Map
  * Plugin URI:        https://activity-map.com
- * Description:       Collect activities triggered by users across the site
+ * Description:       The WordPress Activity Map plugin is a comprehensive tool designed to help you monitor and analyze user interactions on your WordPress site.
  * Version:           1.0.0
  * Author:            Sergei Kiprono
  * Author URI:        https://activity-map/sergei/
@@ -47,6 +47,7 @@ include('classes/class-am-hooks.php');
 include('classes/class-am-db-store.php');
 
 include('includes/class-activity-map-activator.php');
+include('includes/class-activity-map-deactivator.php');
 
 
 /**
@@ -68,8 +69,7 @@ function deactivate_activity_map() {
 }
 
 register_activation_hook( __FILE__, 'activate_activity_map' );
-// register_deactivation_hook( __FILE__, 'deactivate_activity_map' );
-register_uninstall_hook( __FILE__, array( 'deactivate_activity_map', 'uninstall' ) );
+register_uninstall_hook( __FILE__, 'deactivate_activity_map' );
 
 /**
  * The core plugin class that is used to define internationalization,
