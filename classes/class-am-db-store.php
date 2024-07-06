@@ -61,30 +61,32 @@ class AM_Db_Store
 		$args = wp_parse_args(
 			$args,
 			array(
-				'action'         => '',
+				'action'        => '',
 				'event_type'    => '',
 				'event_subtype' => '',
 				'event_name'    => '',
 				'event_id'      => '',
-				'user_id' => $this->get_user_id(),
-				'ip_address'        => $this->get_current_ip_address(),
-				'event_time'      => $this->get_current_event_time(),
+				'user_id' 		=> $this->get_user_id(),
+				'ip_address'    => $this->get_current_ip_address(),
+				'event_time'    => $this->get_current_event_time(),
+				'metadata'		=> ''
 			)
 		);
 
 		$query = $wpdb->insert(
 			$wpdb->activity_log,
 			array(
-				'action'         => $args['action'],
+				'action'        => $args['action'],
 				'event_type'    => $args['event_type'],
 				'event_subtype' => $args['event_subtype'],
 				'event_name'    => $args['event_name'],
 				'event_id'      => $args['event_id'],
 				'user_id'       =>  $args['user_id'],
 				'ip_address'    => $args['ip_address'],
-				'event_time'     => $args['event_time'],
+				'event_time'    => $args['event_time'],
+				'metadata'      => $args['metadata'],
 			),
-			array('%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d')
+			array('%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d','%s')
 		);
 
 		if (false === $query) {

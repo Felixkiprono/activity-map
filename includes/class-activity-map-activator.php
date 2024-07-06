@@ -46,6 +46,7 @@ class Activity_Map_Activator
 			`user_id` int(11) NOT NULL DEFAULT '0',
 			`ip_address` varchar(55) NOT NULL DEFAULT 'localhost',
 			`event_time` int(11) NOT NULL DEFAULT '0',
+			`metadata` text NULL,
 			PRIMARY KEY (id)
 		) $charset_collate;";
 
