@@ -105,13 +105,15 @@ class Am_Hook_Plugins
 
             if ($plugins[$name]) {
 
-                am_add_activity(array(
+                log_activity(array(
                     'action' => $event,
-                    'event_type' => 'Plugins',
-                    'event_subtype' => "plugin_$event",
-                    'event_name' =>  $plugin_details['Name'],
-                    'event_id' => 0,
-                    'metadata' => $meta
+                    'action_type' => 'Plugin',
+                    'action_title' =>  $plugin_details['Name'],
+                    'message' =>   $event . ' ' . $plugin_details['Name'] . ' Plugin',
+                    'action_id' => 0,
+                    'action_details' => $meta,
+                    'action_changes' => '',
+                    'metadata' => ''
                 ));
             }
         }

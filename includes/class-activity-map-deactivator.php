@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       https://activity-map/sergei
+ * @link       https://activity-map/celestialcodex
  * @since      1.0.0
  *
  * @package    Activity_Map
@@ -23,13 +23,7 @@
 class Activity_Map_Deactivator
 {
 
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
+
 	public static function deactivate()
 	{
 

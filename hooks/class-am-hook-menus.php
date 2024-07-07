@@ -85,8 +85,8 @@ class Am_Hook_Menus
      */
     public function __construct()
     {
-        add_action('wp_create_nav_menu', array(&$this, 'hooks_to_menu_created'), 10, 1);
-        add_action('wp_update_nav_menu', array(&$this, 'hooks_to_menu_updated'), 10, 1);
-        add_action('delete_nav_menu', array(&$this, 'hooks_to_menu_deleted'), 10, 3);
+        // add_action('wp_create_nav_menu', array(&$this, 'hooks_to_menu_created'), 10, 1);
+        // add_action('wp_update_nav_menu', array(&$this, 'hooks_to_menu_updated'), 10, 1);
+        // add_action('delete_nav_menu', array(&$this, 'hooks_to_menu_deleted'), 10, 3);
     }
 }

@@ -17,16 +17,19 @@ class Am_Hook_Attachments
         }
         $attachment = get_post($id);
         $meta = json_encode($attachment);
-        am_add_activity(array(
-            'action' => 'uploaded',
-            'event_type' => 'Attachments',
-            'event_subtype' => $attachment->post_type,
-            'event_name' =>  $attachment->post_type.'_uploaded_'.esc_html(get_the_title($attachment->ID)),
-            'event_id' => $id,
-            'metadata' => $meta
+        $original_metadata = json_encode(wp_get_attachment_metadata($id));
+
+        log_activity(array(
+            'action' => 'Uploaded',
+            'action_type' => 'Attachment',
+            'action_title' =>  esc_html(get_the_title($attachment->ID)),
+            'message' =>    'Uploaded Attachment ' . esc_html(get_the_title($attachment->ID)),
+            'action_id' => $id,
+            'action_details' => $original_metadata,
+            'action_changes' => '',
         ));
     }
-    
+
     /**
      * hooks_to_edit_attachment
      *
@@ -35,21 +38,26 @@ class Am_Hook_Attachments
      */
     public function hooks_to_edit_attachment($id)
     {
+
         if (is_null($id)) {
             return;
         }
         $attachment = get_post($id);
+        // Get the original metadata before update
+        $original_metadata = wp_get_attachment_metadata($id);
         $meta = json_encode($attachment);
-        am_add_activity(array(
-            'action' => 'edited',
-            'event_type' => 'Attachments',
-            'event_subtype' => $attachment->post_type,
-            'event_name' =>  $attachment->post_type.'_edited_'.esc_html(get_the_title($attachment->ID)),
-            'event_id' => $id,
-            'metadata' => $meta
+
+        log_activity(array(
+            'action' => 'Edited',
+            'action_type' => 'Attachment',
+            'action_title' =>  esc_html(get_the_title($attachment->ID)),
+            'message' =>    'Edited Attachment ' . esc_html(get_the_title($attachment->ID)),
+            'action_id' => $id,
+            'action_details' => json_encode($original_metadata),
+            'action_changes' =>  $meta,
         ));
     }
-    
+
     /**
      * hooks_to_delete_attachment
      *
@@ -62,14 +70,15 @@ class Am_Hook_Attachments
             return;
         }
         $attachment = get_post($id);
-        $meta = json_encode($attachment);
-        am_add_activity(array(
-            'action' => 'deleted',
-            'event_type' => 'Attachments',
-            'event_subtype' => $attachment->post_type,
-            'event_name' =>  $attachment->post_type.'_deleted_'.esc_html(get_the_title($attachment->ID)),
-            'event_id' => $id,
-            'metadata' => $meta
+        $original_metadata = json_encode(wp_get_attachment_metadata($id));
+        log_activity(array(
+            'action' => 'Deleted',
+            'action_type' => 'Attachment',
+            'action_title' =>  esc_html(get_the_title($attachment->ID)),
+            'message' =>   ' Deleted Attachment ' . esc_html(get_the_title($attachment->ID)),
+            'action_id' => $id,
+            'action_details' => $original_metadata,
+            'action_changes' => '',
         ));
     }
 

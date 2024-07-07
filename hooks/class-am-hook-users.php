@@ -20,16 +20,15 @@ class Am_Hook_Users
 
         if ($user) {
             $meta = json_encode($user);
-            am_add_activity(
-                array(
-                    'action' => 'registered',
-                    'event_type' => 'Users',
-                    'event_subtype' => 'Profile',
-                    'event_id' => $user->ID,
-                    'event_name' =>   $user->user_nicename,
-                    'metadata' => $meta
-                )
-            );
+            log_activity(array(
+                'action' => 'Registered',
+                'action_type' => 'User',
+                'action_title' =>  $user->user_nicename . ' Registration',
+                'message' =>    'New account by the username ' . $user->user_nicename . ' account has been registered ',
+                'action_id' => $user->ID,
+                'action_details' => $meta,
+                'action_changes' => ''
+            ));
         }
     }
 
@@ -47,16 +46,15 @@ class Am_Hook_Users
         $user = get_user_by('id', $user_id);
         if ($user) {
             $meta = json_encode($user);
-            am_add_activity(
-                array(
-                    'action' => 'deleted',
-                    'event_type' => 'Users',
-                    'event_subtype' => 'Profile',
-                    'event_id' => $user->ID,
-                    'event_name' =>   $user->user_nicename,
-                    'metadata' => $meta
-                )
-            );
+            log_activity(array(
+                'action' => 'Deleted',
+                'action_type' => 'User',
+                'action_title' =>  $user->user_nicename . ' Deleted',
+                'message' =>    'Account by usernmae ' . $user->user_nicename . ' has been deleted ',
+                'action_id' => $user->ID,
+                'action_details' => $meta,
+                'action_changes' => ''
+            ));
         }
     }
 
@@ -72,16 +70,15 @@ class Am_Hook_Users
             $logged_user = get_user_by('login',  $user);
             $meta = json_encode($logged_user);
             if ($logged_user) {
-                am_add_activity(
-                    array(
-                        'action' => 'logged_in',
-                        'event_type' => 'Users',
-                        'event_subtype' => 'Login',
-                        'event_id' => $logged_user->ID,
-                        'event_name' =>  $logged_user->user_nicename,
-                        'metadata' => $meta
-                    )
-                );
+                log_activity(array(
+                    'action' => 'Login',
+                    'action_type' => 'User',
+                    'action_title' => $logged_user->user_nicename . ' Login',
+                    'message' =>    'User ' . $logged_user->user_nicename . ' has logged in',
+                    'action_id' => $logged_user->ID,
+                    'action_details' => $meta,
+                    'action_changes' => ''
+                ));
             }
         }
     }
@@ -102,16 +99,15 @@ class Am_Hook_Users
         $user = get_user_by('id', $user_id);
         if ($user) {
             $meta = json_encode($user);
-            am_add_activity(
-                array(
-                    'action' => 'updated',
-                    'event_type' => 'Users',
-                    'event_subtype' => 'Profile',
-                    'event_id' => $user->ID,
-                    'event_name' =>  $user->user_nicename,
-                    'metadata' => $meta
-                )
-            );
+            log_activity(array(
+                'action' => 'Updated',
+                'action_type' => 'User',
+                'action_title' => $user->user_nicename . ' Profile Update',
+                'message' =>   'Account by the username ' . $user->user_nicename . ' has updated their profile',
+                'action_id' => $user->ID,
+                'action_details' => $meta,
+                'action_changes' => ''
+            ));
         }
     }
 
@@ -124,15 +120,15 @@ class Am_Hook_Users
     public function hooks_to_wrong_password($username)
     {
         if ($username) {
-            am_add_activity(
-                array(
-                    'action' => 'login_fail',
-                    'event_type' => 'Users',
-                    'event_subtype' => 'login',
-                    'event_id' => 0,
-                    'event_name' =>  $username,
-                )
-            );
+            log_activity(array(
+                'action' => 'FailedLogin',
+                'action_type' => 'User',
+                'action_title' => $username . ' Login',
+                'message' =>   'User going by name ' . $username . ' failed to login due to wrong password',
+                'action_id' => 0,
+                'action_details' => json_encode($username),
+                'action_changes' => ''
+            ));
         }
     }
     /**
@@ -145,15 +141,16 @@ class Am_Hook_Users
         $current_user = wp_get_current_user();
 
         if ($current_user->ID != 0) {
-            am_add_activity(
-                array(
-                    'action' => 'logged_out',
-                    'event_type' => 'Users',
-                    'event_subtype' => 'logout',
-                    'event_id' => $current_user->ID,
-                    'event_name' =>  $current_user->user_nicename,
-                )
-            );
+
+            log_activity(array(
+                'action' => 'Logout',
+                'action_type' => 'User',
+                'action_title' => $current_user->user_nicename . ' Logout',
+                'message' =>    'User ' . $current_user->user_nicename . ' has logged out',
+                'action_id' => $current_user->ID,
+                'action_details' => json_encode($current_user),
+                'action_changes' => ''
+            ));
         }
     }
 

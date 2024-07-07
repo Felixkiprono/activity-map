@@ -16,17 +16,26 @@ class Am_Hook_Themes
     public function hooks_to_switch_theme($new_name, $new_theme, $old_theme)
     {
         if ($new_name && $new_theme) {
-            $meta = json_encode(array("new"=>$new_theme->get('Name'), "old"=>$old_theme->get('Name')));
-            am_add_activity(
-                array(
+            $theme_details = json_encode([
+                'title' => $new_theme->get('Name'),
+                'link' => '',
+
+            ]);
+
+            log_activity(array(
+                'action' => 'Switched',
+                'action_type' => 'Theme',
+                'action_title' => $new_name,
+                'message' =>   'Switched to ' . $new_theme->get('Name') . ' from ' . $old_theme->get('Name'),
+                'action_id' => 0,
+                'action_details' =>  $theme_details,
+                'action_changes' => json_encode([
+                    'object' => 'theme',
                     'action' => 'switched',
-                    'event_type' => 'Themes',
-                    'event_subtype' => $new_theme->get_stylesheet(),
-                    'event_name' => $new_name,
-                    'event_id' => 0,
-                    'metadata' => $meta
-                )
-            );
+                    'old_value' => $old_theme->get('Name'),
+                    'new_value' => $new_theme->get('Name')
+                ]),
+            ));
         }
     }
 

@@ -16,16 +16,16 @@ class Am_Hook_Export
             return;
         }
         $name = isset($arguments['content']) ? $arguments['content'] : 'all';
-
         $meta = json_encode($arguments);
 
-        am_add_activity(array(
-            'action' => 'exported_and_downloaded',
-            'event_type' => 'Export',
-            'event_subtype' => "Exported",
-            'event_name' =>  $name,
-            'event_id' => 0,
-            'metadata' => $meta
+        log_activity(array(
+            'action' => 'Exported',
+            'action_type' => 'Export',
+            'action_title' =>  $name,
+            'message' =>    'Exported  ' . $name,
+            'action_id' => 0,
+            'action_details' => $meta,
+            'action_changes' => '',
         ));
     }
 

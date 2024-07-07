@@ -30,22 +30,21 @@ class Am_Hook_Posts
         if ('wp_navigation' === get_post_type($post->ID))
             return;
 
-        $event_name = esc_html(get_the_title($post));
-        $meta = json_encode($post);
+        $post_details = json_encode([
+            'title' => $post->post_title,
+            'link' => get_permalink($post->ID),
 
-        if (empty($title))
-            $event_name = __('(no title)');
+        ]);
 
-        am_add_activity(
-            array(
-                'action' => 'deleted',
-                'event_type' => 'Posts',
-                'event_subtype' => $post->post_type,
-                'event_id' => $post->ID,
-                'event_name' =>   $event_name,
-                'metadata' => $meta
-            )
-        );
+        log_activity(array(
+            'action' => 'Deleted',
+            'action_type' =>  'Post',
+            'action_title' =>  $post->post_title,
+            'message' =>   'Deleted' . ' Post ' . $post->post_title,
+            'action_id' => $post->ID,
+            'action_details' => $post_details,
+            'action_changes' => '',
+        ));
     }
 
 
@@ -72,43 +71,39 @@ class Am_Hook_Posts
         }
         if ('auto-draft' === $previous_status && ('auto-draft' !== $current_status && 'inherit' !== $current_status)) {
             // When the page is created
-            $event = 'created';
+            $event = 'Created';
         } elseif ('auto-draft' === $current_status || ('new' === $previous_status && 'inherit' === $current_status)) {
             return;
         } elseif ('trash' === $current_status) {
             // If the page was deleted
-            $event = 'trashed';
+            $event = 'Trashed';
         } elseif ('trash' === $previous_status) {
             // If the page was restored from trash
-            $event = 'restored';
+            $event = 'Restored';
         } else {
             // Finally, the page was updated
-            $event = 'updated';
+            $event = 'Updated';
         }
         $type = 'Posts';
         if ('page' === $post->post_type) {
             $type = 'Pages';
         }
 
-        $meta = json_encode($post);
+        $post_details = json_encode([
+            'title' => $post->post_title,
+            'link' => get_permalink($post->ID),
+        ]);
 
-        $event_name = esc_html(get_the_title($post));
-
-        if (empty($title))
-            $event_name = __('(no title)');
-
-        am_add_activity(
-            array(
-                'action' => $event,
-                'event_type' =>  $type,
-                'event_subtype' => $post->post_type,
-                'event_id' => $post->ID,
-                'event_name' =>  $event_name,
-                'metadata' => $meta
-            )
-        );
+        log_activity(array(
+            'action' => $event,
+            'action_type' =>  'Post',
+            'action_title' =>  $post->post_title,
+            'message' =>   $event . ' Post ' .  $post->post_title,
+            'action_id' => $post->ID,
+            'action_details' =>  $post_details,
+            'action_changes' => '',
+        ));
     }
-
 
     /**
      * __construct

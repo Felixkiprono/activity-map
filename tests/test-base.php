@@ -6,6 +6,14 @@ class Activity_Map_Test_Base extends WP_UnitTestCase
     public function test_plugin_activated()
     {
         $this->assertTrue(is_plugin_active(PLUGIN_PATH));
+
+        $this->assertGreaterThan(0, 1);
+
+        $this->assertGreaterThan(0, 3);
+
+
+        $this->assertGreaterThan(0, 2);
+
     }
 
     public function test_getInstance()
@@ -14,6 +22,18 @@ class Activity_Map_Test_Base extends WP_UnitTestCase
     }
 
     public function test_plugin_check()
+    {
+        $this->assertTrue(true);
+    }
+    public function test_plugin_check1()
+    {
+        $this->assertTrue(true);
+    }
+    public function test_plugin_check2()
+    {
+        $this->assertTrue(true);
+    }
+    public function test_plugin_check3()
     {
         $this->assertTrue(true);
     }

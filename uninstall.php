@@ -19,7 +19,7 @@
  * 
  * 
  *
- * @link       https://activity-map/sergei
+ * @link       https://github.com/celestialcodex/activity-map
  * @since      1.0.0
  *
  * @package    Activity_Map
@@ -40,6 +40,9 @@ function uninstall_activity_map()
 	global $wpdb;
 	$admin_role = get_role('administrator');
 	$wpdb->query("DROP TABLE IF EXISTS `{$wpdb->prefix}activity_map`;");
+	/**to do run a backup
+
+	export a csv/html data **/
 	delete_option('activity_map_db_version');
 }
 

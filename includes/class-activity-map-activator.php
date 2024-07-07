@@ -3,7 +3,7 @@
 /**
  * Fired during plugin activation
  *
- * @link       https://activity-map/sergei
+ * @link       https://activity-map/celestialcodex
  * @since      1.0.0
  *
  * @package    Activity_Map
@@ -25,27 +25,27 @@ class Activity_Map_Activator
 {
 
 	/**
-	 * Short Description. (use period)
+	 * activate
 	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
+	 * @return void
 	 */
 	public static function activate()
 	{
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = "CREATE TABLE `{$wpdb->prefix}activity_map` (
-			`id` mediumint(9) NOT NULL AUTO_INCREMENT,
-			`action` varchar(255) NOT NULL,
-			`event_type` varchar(255) NOT NULL,
-			`event_subtype` varchar(255) NOT NULL DEFAULT '',
-			`event_name` varchar(255) NOT NULL,
-			`event_id` int(11) NOT NULL DEFAULT '0',
+		$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}activity_map` (
+			`id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+			`date_time` datetime NOT NULL,
 			`user_id` int(11) NOT NULL DEFAULT '0',
-			`ip_address` varchar(55) NOT NULL DEFAULT 'localhost',
-			`event_time` int(11) NOT NULL DEFAULT '0',
+			`fingerprint` text NULL,
+			`action` varchar(255) NOT NULL,
+			`action_type` varchar(255) NULL,
+			`action_title` varchar(255) NULL DEFAULT '',
+			`message` text NULL,
+			`action_id` mediumint(11) NOT NULL DEFAULT '0',
+			`action_details` LONGTEXT NULL,
+			`action_changes` LONGTEXT NULL,
 			`metadata` text NULL,
 			PRIMARY KEY (id)
 		) $charset_collate;";

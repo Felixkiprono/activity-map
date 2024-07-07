@@ -38,15 +38,81 @@ class AM_Db_Store
 	}
 
 	/**
+	 * get_current_browser_and_user_agent
+	 *
+	 * @return void
+	 */
+	function get_current_browser_and_user_agent()
+	{
+		$browser = '';
+		$user_agent = '';
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			$user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+			// Detect browser from user agent
+			if (strpos($user_agent, 'MSIE') !== false || strpos($user_agent, 'Trident') !== false) {
+				$browser = 'Internet Explorer';
+			} elseif (strpos($user_agent, 'Firefox') !== false) {
+				$browser = 'Mozilla Firefox';
+			} elseif (strpos($user_agent, 'Chrome') !== false) {
+				$browser = 'Google Chrome';
+			} elseif (strpos($user_agent, 'Safari') !== false) {
+				$browser = 'Apple Safari';
+			} elseif (strpos($user_agent, 'Opera') !== false || strpos($user_agent, 'OPR') !== false) {
+				$browser = 'Opera';
+			} elseif (strpos($user_agent, 'Edge') !== false) {
+				$browser = 'Microsoft Edge';
+			} elseif (strpos($user_agent, 'Trident') !== false) {
+				$browser = 'Internet Explorer';
+			} else {
+				$browser = 'Unknown';
+			}
+		}
+
+		return array(
+			'browser' => $browser,
+			'user_agent' => $user_agent
+		);
+	}
+
+	/**
 	 * get_current_event_time
 	 *
 	 * @return void
 	 */
-	protected function get_current_event_time()
+	protected function get_current_date_time()
 	{
-		return current_time('timestamp');
+		$currentDateTime = date('Y-m-d H:i:s');
+		return $currentDateTime;
 	}
 
+	/**
+	 * get_user_fingerprint
+	 *
+	 * @return void
+	 */
+	public function get_user_fingerprint(): string
+	{
+		$user_info = get_userdata($this->get_user_id());
+		$username = '';
+		if ($user_info) {
+			$username = $user_info->user_login;
+		}
+		// $current_info = get_current_browser_and_user_agent();
+		$current_browser = isset($current_info['browser']) ? $current_info['browser'] : "";
+		$current_user_agent = isset($current_info['user_agent']) ? $current_info['user_agent'] : "";
+
+		$finger_print = [
+			'user_id' => $this->get_user_id(),
+			'user_name' => $username,
+			'ip_address' => $this->get_current_ip_address(),
+			'user_agent' => $current_user_agent,
+			'browser' => $current_browser,
+		];
+
+		return json_encode($finger_print);
+	}
 
 	/**
 	 * insert
@@ -61,32 +127,36 @@ class AM_Db_Store
 		$args = wp_parse_args(
 			$args,
 			array(
-				'action'        => '',
-				'event_type'    => '',
-				'event_subtype' => '',
-				'event_name'    => '',
-				'event_id'      => '',
-				'user_id' 		=> $this->get_user_id(),
-				'ip_address'    => $this->get_current_ip_address(),
-				'event_time'    => $this->get_current_event_time(),
-				'metadata'		=> ''
+				'action'         => '',
+				'action_type'    => '',
+				'action_title'   => '',
+				'message'        => '',
+				'action_id'      => '',
+				'user_id' 		 => $this->get_user_id(),
+				'fingerprint'    => $this->get_user_fingerprint(),
+				'action_details' => '',
+				'action_changes' => '',
+				'date_time'      => $this->get_current_date_time(),
+				'metadata'		 => ''
 			)
 		);
 
 		$query = $wpdb->insert(
 			$wpdb->activity_log,
 			array(
-				'action'        => $args['action'],
-				'event_type'    => $args['event_type'],
-				'event_subtype' => $args['event_subtype'],
-				'event_name'    => $args['event_name'],
-				'event_id'      => $args['event_id'],
-				'user_id'       =>  $args['user_id'],
-				'ip_address'    => $args['ip_address'],
-				'event_time'    => $args['event_time'],
-				'metadata'      => $args['metadata'],
+				'user_id'         => $args['user_id'],
+				'fingerprint'     => $args['fingerprint'],
+				'action'          => $args['action'],
+				'action_type'     => $args['action_type'],
+				'action_title'    => $args['action_title'],
+				'action_id'       => $args['action_id'],
+				'action_details'  => $args['action_details'],
+				'action_changes'  => $args['action_changes'],
+				'date_time'       => $args['date_time'],
+				'message'         => $args['message'],
+				'metadata'        => $args['metadata'],
 			),
-			array('%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d','%s')
+			array('%d', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s')
 		);
 
 		if (false === $query) {
@@ -98,12 +168,12 @@ class AM_Db_Store
 }
 
 /**
- * am_add_activity
+ * log_activity
  *
  * @param  mixed $args
  * @return void
  */
-function am_add_activity($args = array())
+function log_activity($args = array())
 {
 	AM_Main::instance()->db_store->insert($args);
 }
