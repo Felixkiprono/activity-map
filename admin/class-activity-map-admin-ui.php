@@ -43,6 +43,27 @@ class AM_Map_Admin_Ui
 	<?php
 	}
 
+	public function time_ago($datetime)
+	{
+		$now = new DateTime();
+		$ago = new DateTime($datetime);
+		$diff = $now->diff($ago);
+
+		if ($diff->y > 0) {
+			return $diff->y . " year" . ($diff->y > 1 ? "s" : "") . " ago";
+		} elseif ($diff->m > 0) {
+			return $diff->m . " month" . ($diff->m > 1 ? "s" : "") . " ago";
+		} elseif ($diff->d > 0) {
+			return $diff->d . " day" . ($diff->d > 1 ? "s" : "") . " ago";
+		} elseif ($diff->h > 0) {
+			return $diff->h . " hour" . ($diff->h > 1 ? "s" : "") . " ago";
+		} elseif ($diff->i > 0) {
+			return $diff->i . " min" . ($diff->i > 1 ? "s" : "") . " ago";
+		} else {
+			return "just now";
+		}
+	}
+
 	/**
 	 * Render the table content for the plugin's admin page.
 	 */
@@ -61,7 +82,7 @@ class AM_Map_Admin_Ui
 			<table class="wp-list-table widefat striped">
 				<thead>
 					<tr>
-						<th>Date Time</th>
+						<th>Time</th>
 						<th>Username</th>
 						<th>Action</th>
 						<th>Type</th>
@@ -79,18 +100,23 @@ class AM_Map_Admin_Ui
 							$user_name = $user ? $user->user_nicename : "";
 							?>
 							<tr>
-								<td><?php echo esc_html($activity->date_time); ?></td>
-								<td><?php echo esc_html($user_name); ?></td>
-								<td><?php echo esc_html($activity->action); ?></td>
+								<td><?php echo esc_html($this->time_ago($activity->date_time)); ?></td>
+								<td><?php echo esc_html(ucfirst($user_name)); ?></td>
+								<td><?php echo esc_html(ucfirst($activity->action)); ?></td>
 								<td><?php echo esc_html($activity->action_type); ?></td>
-								<td><?php echo esc_html($activity->action_title); ?></td>
+								<td><?php echo esc_html(ucfirst($activity->action_title)); ?></td>
 								<td><?php echo esc_html($activity->message); ?></td>
 							</tr>
+
 						<?php endforeach; ?>
+						<tr>
+							<td colspan="6">Total <?php echo count($activities) ?></td>
+						</tr>
 					<?php else : ?>
 						<tr>
 							<td colspan="6">No activities found.</td>
 						</tr>
+
 					<?php endif; ?>
 				</tbody>
 			</table>

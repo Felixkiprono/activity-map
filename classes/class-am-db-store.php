@@ -184,7 +184,7 @@ class AM_Db_Store
 		$total_records = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->activity_map");
 		$total_pages = ceil($total_records / $limit);
 
-		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->activity_map LIMIT %d, %d", $start_from, $limit));
+		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->activity_map order by id  desc  LIMIT %d, %d", $start_from, $limit));
 		return $results;
 	}
 }
