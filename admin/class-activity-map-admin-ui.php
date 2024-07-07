@@ -18,13 +18,13 @@ class AM_Map_Admin_Ui
 	public function add_plugin_menu()
 	{
 		add_menu_page(
-			'Activity Map',         // Page title
-			'Activity Map',         // Menu title
+			'Activities',        // Page title
+			'Activity Map',      // Menu title
 			'manage_options',    // Capability required to access
-			'activity_map',    // Menu slug (unique identifier)
+			'activity_map',      // Menu slug (unique identifier)
 			array($this, 'render_plugin_page'), // Callback function to render the page content
 			'dashicons-admin-plugins', // Icon (optional) - Replace with appropriate dashicon class
-			80                    // Menu position (optional)
+			6                 // Menu position (optional)
 		);
 	}
 
@@ -33,9 +33,10 @@ class AM_Map_Admin_Ui
 	 */
 	public function render_plugin_page()
 	{
+
 ?>
 		<div class="wrap">
-			<h1>My Activity Map Events</h1>
+			<h1>My Activities Map</h1>
 			<!-- Add your table here -->
 			<?php $this->render_plugin_table(); ?>
 		</div>
@@ -47,29 +48,127 @@ class AM_Map_Admin_Ui
 	 */
 	public function render_plugin_table()
 	{
+		if (!current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.'));
+		}
 		// Example: Fetching and displaying data in the table rows
-		$users = get_users();
+		// $users = get_users();
+		$page = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
+		$activities = load_activities($page);
 	?>
-		<table class="wp-list-table widefat striped">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Email</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				foreach ($users as $user) {
-					echo '<tr>';
-					echo '<td>' . $user->ID . '</td>';
-					echo '<td>' . $user->display_name . '</td>';
-					echo '<td>' . $user->user_email . '</td>';
-					echo '</tr>';
-				}
-				?>
-			</tbody>
-		</table>
+		<div class="wrap">
+			<!-- <h1>Activity Map <small>Monitor User Activities</small></h1> -->
+			<table class="wp-list-table widefat striped">
+				<thead>
+					<tr>
+						<th>Date Time</th>
+						<th>Username</th>
+						<th>Action</th>
+						<th>Type</th>
+						<th>Title</th>
+						<th>Message</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ($activities) : ?>
+						<?php foreach ($activities as $activity) : ?>
+							<?php
+							$user_name = "";
+
+							$user = get_user_by('id', $activity->user_id);
+							$user_name = $user ? $user->user_nicename : "";
+							?>
+							<tr>
+								<td><?php echo esc_html($activity->date_time); ?></td>
+								<td><?php echo esc_html($user_name); ?></td>
+								<td><?php echo esc_html($activity->action); ?></td>
+								<td><?php echo esc_html($activity->action_type); ?></td>
+								<td><?php echo esc_html($activity->action_title); ?></td>
+								<td><?php echo esc_html($activity->message); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					<?php else : ?>
+						<tr>
+							<td colspan="6">No activities found.</td>
+						</tr>
+					<?php endif; ?>
+				</tbody>
+			</table>
+
+			<!-- Pagination -->
+			<div class="tablenav">
+				<div class="tablenav-pages">
+					<?php
+					$base_url = add_query_arg('paged', '%#%');
+					echo paginate_links(array(
+						'base' => $base_url,
+						'format' => '',
+						'prev_text' => __('&laquo;'),
+						'next_text' => __('&raquo;'),
+						'total' => 26,
+						'current' => $page,
+					));
+					?>
+				</div>
+			</div>
+		</div>
+		<style>
+			.wrap {
+				position: relative;
+				padding-bottom: 50px;
+				/* Adjust based on the height of the pagination */
+			}
+
+			.wrap h1 {
+				display: flex;
+				align-items: center;
+			}
+
+			.wrap h1 small {
+				margin-left: 10px;
+				font-size: 16px;
+				color: #777;
+			}
+
+			.tablenav {
+				margin-top: 20px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.tablenav-pages {
+				display: flex;
+				align-items: center;
+			}
+
+			.tablenav-pages a,
+			.tablenav-pages span {
+				padding: 6px 12px;
+				border: 1px solid #ccc;
+				margin-right: 5px;
+				text-decoration: none;
+				color: #0073aa;
+				background-color: #f9f9f9;
+				border-radius: 4px;
+				transition: all 0.3s ease;
+			}
+
+			.tablenav-pages a:hover {
+				background-color: #0073aa;
+				color: #fff;
+				border-color: #0073aa;
+			}
+
+			.tablenav-pages .current {
+				padding: 6px 12px;
+				border: 1px solid #0073aa;
+				background-color: #0073aa;
+				color: #fff;
+				border-radius: 4px;
+			}
+		</style>
+
 <?php
 	}
 }

@@ -29,5 +29,7 @@ class AM_Hooks
 		new Am_Hook_Menus();
 		new Am_Hook_Themes();
 		new Am_Hook_Options();
+
+		
 	}
 }

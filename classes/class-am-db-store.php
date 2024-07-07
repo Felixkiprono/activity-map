@@ -142,7 +142,7 @@ class AM_Db_Store
 		);
 
 		$query = $wpdb->insert(
-			$wpdb->activity_log,
+			$wpdb->activity_map,
 			array(
 				'user_id'         => $args['user_id'],
 				'fingerprint'     => $args['fingerprint'],
@@ -165,6 +165,28 @@ class AM_Db_Store
 			do_action('am_add_activity', $args);
 		}
 	}
+
+	/**
+	 * fetch_all_logs
+	 *
+	 * @param  mixed $page
+	 * @return void
+	 */
+	public function fetch_all_logs($page)
+	{
+		// Pagination settings
+		$limit = 10; // Number of records per page
+		$start_from = ($page - 1) * $limit;
+
+		// Fetch records from the database
+		global $wpdb;
+		// $table_name = $wpdb->prefix . 'your_table_name';
+		$total_records = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->activity_map");
+		$total_pages = ceil($total_records / $limit);
+
+		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->activity_map LIMIT %d, %d", $start_from, $limit));
+		return $results;
+	}
 }
 
 /**
@@ -176,4 +198,16 @@ class AM_Db_Store
 function log_activity($args = array())
 {
 	AM_Main::instance()->db_store->insert($args);
+}
+
+
+/**
+ * load_activities
+ *
+ * @return void
+ */
+function load_activities($page)
+{
+	$activities =  AM_Main::instance()->db_store->fetch_all_logs($page);
+	return $activities;
 }

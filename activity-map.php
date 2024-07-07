@@ -40,6 +40,7 @@ define('ACTIVITY_MAP_VERSION', '1.0.0');
 
 include('classes/class-am-hooks.php');
 include('classes/class-am-db-store.php');
+include('admin/class-activity-map-admin-ui.php');
 
 include('includes/class-activity-map-activator.php');
 include('includes/class-activity-map-deactivator.php');
@@ -82,6 +83,8 @@ final class AM_Main
 
 	public $hooks;
 
+	public $admin_ui;
+
 	public $db_store;
 
 
@@ -102,9 +105,10 @@ final class AM_Main
 
 		$this->hooks         = new AM_Hooks();
 		$this->db_store      = new AM_Db_Store();
+		$this->admin_ui      = new AM_Map_Admin_Ui();
 
-		// set up our DB name
-		$wpdb->activity_log = $wpdb->prefix . 'activity_map';
+		// set up our DB name globaly
+		$wpdb->activity_map = $wpdb->prefix . 'activity_map';
 		add_action('plugins_loaded', array(&$this, 'load_textdomain'));
 	}
 
