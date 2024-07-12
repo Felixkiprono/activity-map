@@ -35,9 +35,6 @@ class AM_Map_Admin_Ui
 	public function render_plugin_page()
 	{
 ?>
-		<style>
-
-		</style>
 		<div class="header-bar">
 			<div class="header-title">
 				<span class="dashicons dashicons-chart-area"></span>
@@ -48,10 +45,36 @@ class AM_Map_Admin_Ui
 				Settings
 			</a>
 		</div>
+		<div class="filter-search-bar">
+			<form action="" method="get">
+				<input type="hidden" name="page" value="activity-map">
+				<div class="search-box">
+					<label for="search-input" class="screen-reader-text">Search activities:</label>
+					<input type="search" id="search-input" name="s" value="<?php echo esc_attr(isset($_GET['s']) ? $_GET['s'] : ''); ?>" placeholder="Search activities...">
+				</div>
+				<div class="filter-box">
+					<label for="filter-select" class="screen-reader-text">Filter activities:</label>
+					<select id="filter-select" name="filter">
+						<option value="">All Activities</option>
+						<option value="comment" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'comment'); ?>>Comments</option>
+						<option value="post" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'post'); ?>>Posts</option>
+						<option value="page" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'page'); ?>>Pages</option>
+						<option value="user" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'user'); ?>>Users</option>
+					</select>
+				</div>
+				<div class="submit-box">
+					<input type="submit" id="search-submit" class="button" value="Search">
+				</div>
+			</form>
+		</div>
 		<div class="wrap">
 			<?php $this->render_plugin_table(); ?>
 		</div>
 	<?php
+	}
+
+	public function get_filter_html()
+	{
 	}
 
 	/**
