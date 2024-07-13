@@ -34,6 +34,17 @@ class AM_Map_Admin_Ui
 	 */
 	public function render_plugin_page()
 	{
+		if (!current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.'));
+		}
+		$filter = isset($_GET['filter_activity_type'])?$_GET['filter_value']:'';
+		// Temporarily comment out the capability check for debugging
+		if (!current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.'));
+		}
+
+
+
 ?>
 		<div class="header-bar">
 			<div class="header-title">
@@ -48,18 +59,19 @@ class AM_Map_Admin_Ui
 		<div class="filter-search-bar">
 			<form action="" method="get">
 				<input type="hidden" name="page" value="activity-map">
-				<div class="search-box">
-					<label for="search-input" class="screen-reader-text">Search activities:</label>
-					<input type="search" id="search-input" name="s" value="<?php echo esc_attr(isset($_GET['s']) ? $_GET['s'] : ''); ?>" placeholder="Search activities...">
-				</div>
 				<div class="filter-box">
 					<label for="filter-select" class="screen-reader-text">Filter activities:</label>
-					<select id="filter-select" name="filter">
+					<select id="filter-select" name="filter_activity_type">
 						<option value="">All Activities</option>
-						<option value="comment" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'comment'); ?>>Comments</option>
-						<option value="post" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'post'); ?>>Posts</option>
-						<option value="page" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'page'); ?>>Pages</option>
-						<option value="user" <?php selected(isset($_GET['filter']) ? $_GET['filter'] : '', 'user'); ?>>Users</option>
+						<option value="comment" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'comment'); ?>>Comments</option>
+						<option value="post" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'post'); ?>>Posts</option>
+						<option value="page" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'page'); ?>>Pages</option>
+						<option value="user" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'user'); ?>>Users</option>
+						<option value="created" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'created'); ?>>Created</option>
+						<option value="updated" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'updated'); ?>>Updated</option>
+						<option value="deleted" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'deleted'); ?>>Deleted</option>
+						<option value="uploaded" <?php selected(isset($_GET['filter_activity_type']) ? $_GET['filter_activity_type'] : '', 'uploaded'); ?>>Uploaded</option>
+
 					</select>
 				</div>
 				<div class="submit-box">
@@ -73,37 +85,6 @@ class AM_Map_Admin_Ui
 	<?php
 	}
 
-	public function get_filter_html()
-	{
-	}
-
-	/**
-	 * time_ago
-	 *
-	 * @param  mixed $datetime
-	 * @return void
-	 */
-	public function time_ago($datetime)
-	{
-		$now = new DateTime();
-		$ago = new DateTime($datetime);
-		$diff = $now->diff($ago);
-
-		if ($diff->y > 0) {
-			return $diff->y . " year" . ($diff->y > 1 ? "s" : "") . " ago";
-		} elseif ($diff->m > 0) {
-			return $diff->m . " month" . ($diff->m > 1 ? "s" : "") . " ago";
-		} elseif ($diff->d > 0) {
-			return $diff->d . " day" . ($diff->d > 1 ? "s" : "") . " ago";
-		} elseif ($diff->h > 0) {
-			return $diff->h . " hour" . ($diff->h > 1 ? "s" : "") . " ago";
-		} elseif ($diff->i > 0) {
-			return $diff->i . " min" . ($diff->i > 1 ? "s" : "") . " ago";
-		} else {
-			return "just now";
-		}
-	}
-
 	/**
 	 * Render the table content for the plugin's admin page.
 	 */
@@ -113,77 +94,127 @@ class AM_Map_Admin_Ui
 			wp_die(__('You do not have sufficient permissions to access this page.'));
 		}
 		$page = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
-
 		$activities = load_activities($page);
-
 		// Define color mapping for activity types
 		$type_colors = [
-			'Comment' => '#3b82f6', // Blue
-			'Post' => '#10b981',    // Green
-			'Plugin' => '#FF00FF',    // 
-			'Page' => '#f59e0b',    // Yellow
+			'Comment' => '#3b82f6',
+			'Post' => '#10b981',
+			'Plugin' => '#FF00FF',
+			'Page' => '#f59e0b',
 			'User' => '#00FFFF',
-			'Default' => '#6b7280', // Gray (default color)
+			'Attachment' => '#008080',
+			'Default' => '#6b7280',
 		];
 
 	?>
-		<div class="wrap">
-			<?php if ($activities) : ?>
-				<ul class="activity-list">
-					<?php foreach ($activities as $activity) : ?>
-						<?php
-						$user_name = "";
-						$user = get_user_by('id', $activity->user_id);
-						$user_name = $user ? $user->user_nicename : "";
-						$avatar = get_avatar($activity->user_id, 24);
-						$type_color = isset($type_colors[$activity->action_type]) ? $type_colors[$activity->action_type] : $type_colors['Default'];
-						?>
-						<li class="activity-item">
-							<div class="activity-content">
-								<div class="activity-header">
-									<div class="activity-title-container">
-										<span class="activity-type" style="background-color: <?php echo esc_html($type_color); ?>">
-											<?php echo esc_html($activity->action_type); ?>
-										</span>
-										<h3 class="activity-title"><?php echo esc_html(ucfirst($activity->action_title)); ?></h3>
-									</div>
-									<span class="activity-time"><?php echo esc_html($this->time_ago($activity->date_time)); ?></span>
-								</div>
-								<p class="activity-description"><?php echo esc_html($activity->message); ?></p>
-								<div class="activity-meta">
-									<span class="activity-user">
-										<?php echo $avatar; ?>
-										<?php echo esc_html(ucfirst($user_name)); ?>
-									</span>
-									<span class="activity-action"><?php echo esc_html(ucfirst($activity->action)); ?></span>
-								</div>
+		<div class="activity-map-container">
+			<div class="activity-map-column left-column">
+				<div class="activity-map-content">
+					<div class="wrap">
+						<?php if ($activities) : ?>
+							<ul class="activity-list">
+								<?php foreach ($activities as $activity) : ?>
+									<?php
+									$user_name = "";
+									$user = get_user_by('id', $activity->user_id);
+									$user_name = $user ? $user->user_nicename : "";
+									$avatar = get_avatar($activity->user_id, 24);
+									$type_color = isset($type_colors[$activity->action_type]) ? $type_colors[$activity->action_type] : $type_colors['Default'];
+
+									$action_details = ($activity->action_type ? 'Attachment' : json_decode($activity->action_details));
+									?>
+									<li class="activity-item">
+										<div class="activity-content">
+											<div class="activity-header">
+												<div class="activity-title-container">
+													<span class="activity-type" style="background-color: <?php echo esc_html($type_color); ?>">
+														<?php echo esc_html($activity->action_type); ?>
+													</span>
+													<h3 class="activity-title"><?php echo esc_html(ucfirst($activity->action_title)); ?></h3>
+												</div>
+												<span class="activity-time"><?php echo esc_html(time_ago($activity->date_time)); ?></span>
+											</div>
+											<p class="activity-description"><?php echo esc_html($activity->message); ?>
+												<span><?php echo "<br> Link"; ?></span>
+											</p>
+
+											<div class="activity-meta">
+												<span class="activity-user">
+													<?php echo $avatar; ?>
+													<?php echo esc_html(ucfirst($user_name)); ?>
+												</span>
+												<span class="activity-action"><?php echo esc_html(ucfirst($activity->action)); ?></span>
+											</div>
+										</div>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+							<div class="pagination">
+								<?php
+								$base_url = add_query_arg('paged', '%#%');
+								echo paginate_links(array(
+									'base' => $base_url,
+									'format' => '',
+									'prev_text' => __('&laquo; Previous'),
+									'next_text' => __('Next &raquo;'),
+									'total' => 26,
+									'current' => $page,
+								));
+								?>
 							</div>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-				<div class="pagination">
-					<?php
-					$base_url = add_query_arg('paged', '%#%');
-					echo paginate_links(array(
-						'base' => $base_url,
-						'format' => '',
-						'prev_text' => __('&laquo; Previous'),
-						'next_text' => __('Next &raquo;'),
-						'total' => 26,
-						'current' => $page,
-					));
-					?>
+						<?php else : ?>
+							<p>No activities found.</p>
+						<?php endif; ?>
+					</div>
 				</div>
-			<?php else : ?>
-				<p>No activities found.</p>
-			<?php endif; ?>
+			</div>
+		
 		</div>
 
 
-<?php
+	<?php
 	}
 
 
+	public function execute_js()
+	{
+	?>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var ctx = document.getElementById('activityChart').getContext('2d');
+				var activityData = <?php echo json_encode($this->get_activity_data()); ?>;
+
+				var chart = new Chart(ctx, {
+					type: 'bar',
+					data: {
+						labels: activityData.labels,
+						datasets: [{
+							label: 'Activities',
+							data: activityData.data,
+							backgroundColor: 'rgba(75, 192, 192, 0.6)',
+							borderColor: 'rgba(75, 192, 192, 1)',
+							borderWidth: 1
+						}]
+					},
+					options: {
+						responsive: true,
+						scales: {
+							y: {
+								beginAtZero: true
+							}
+						}
+					}
+				});
+			});
+		</script>
+<?php
+	}
+	/**
+	 * enqueue_admin_styles
+	 *
+	 * @return void
+	 */
 	public function enqueue_admin_styles()
 	{
 		wp_enqueue_style('activities-map-admin-style', plugin_dir_url(__FILE__) . 'css/activity-map-admin.css', array(), '1.0.0', 'all');

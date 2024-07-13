@@ -45,6 +45,7 @@ include('admin/class-activity-map-admin-ui.php');
 include('includes/class-activity-map-activator.php');
 include('includes/class-activity-map-deactivator.php');
 
+require_once plugin_dir_path(__FILE__) .'includes/global-helpers.php';
 
 
 /**

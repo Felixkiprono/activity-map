@@ -1,5 +1,7 @@
 <?php
+
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 
 class AM_Db_Store
 {
@@ -174,18 +176,105 @@ class AM_Db_Store
 	 */
 	public function fetch_all_logs($page)
 	{
+		global $wpdb;
+
 		// Pagination settings
 		$limit = 10; // Number of records per page
 		$start_from = ($page - 1) * $limit;
 
 		// Fetch records from the database
-		global $wpdb;
 		// $table_name = $wpdb->prefix . 'your_table_name';
 		$total_records = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->activity_map");
 		$total_pages = ceil($total_records / $limit);
 
 		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->activity_map order by id  desc  LIMIT %d, %d", $start_from, $limit));
 		return $results;
+	}
+
+	public function fetch_all_logs_by_filter($filter, $value)
+	{
+		// Fetch records from the database
+		global $wpdb;
+		$where = '';
+		switch ($filter) {
+
+			case 'comment':
+				$where  = "action_type = 'comment' and action_title='$value' ";
+				break;
+			case 'post':
+				$where  = "action_type = 'Post' and action_title='$value' ";
+
+				break;
+			case 'page':
+				$where  = "action_type = 'Post' and action_title='$value' ";
+
+				break;
+			case 'user':
+				$where  = "action = 'comment' and action_title='$value' ";
+
+				break;
+				// case 'created':
+				// 	$where  = "action = 'comment' and action_title='$value' ";
+
+				// 	break;
+				// case 'updated':
+				// 	$where  = "action = 'Updated' and action_title='$value' ";
+				// break;
+			case 'user':
+				$where  = "action_type = 'User' and action_title='$value' ";
+
+				// break;
+				// case 'deleted':
+				// $where  = "action = 'Deleted' and action_title='$value' ";
+
+				// break;
+			case 'uploaded':
+				$where  = "action = 'comment' and action_title='$value' ";
+
+				break;
+			default:
+				return;
+		}
+		// Pagination settings
+		$limit = 10; // Number of records per page
+		$start_from = ($page - 1) * $limit;
+
+
+		// $table_name = $wpdb->prefix . 'your_table_name';
+		$total_records = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->activity_map");
+		$total_pages = ceil($total_records / $limit);
+
+		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->activity_map order by id  desc  LIMIT %d, %d", $start_from, $limit));
+		return $results;
+	}
+
+	/**
+	 * fetch_stats
+	 *
+	 * @return array
+	 */
+	public function fetch_stats(): array
+	{
+		global $wpdb;
+		$results = $wpdb->get_results($wpdb->prepare("
+			SELECT action_type, COUNT(*) as count
+			FROM $wpdb->activity_map
+			GROUP BY action_type
+			ORDER BY count DESC
+			LIMIT 5
+		"));
+
+		$labels = [];
+		$data = [];
+		foreach ($results as $result) {
+			$labels[] = $result->action_type;
+			$data[] = $result->count;
+		}
+
+		return [
+			'labels' => $labels,
+			'data' => $data
+		];
 	}
 }
 
@@ -209,5 +298,30 @@ function log_activity($args = array())
 function load_activities($page)
 {
 	$activities =  AM_Main::instance()->db_store->fetch_all_logs($page);
+	return $activities;
+}
+
+
+/**
+ * load_activities_by_filter
+ *
+ * @param  mixed $filter
+ * @param  mixed $value
+ * @return void
+ */
+function load_activities_by_filter($filter, $value)
+{
+	$activities =  AM_Main::instance()->db_store->fetch_all_logs_by_filter($filter, $value);
+	return $activities;
+}
+
+/**
+ * load_activities_stats
+ *
+ * @return void
+ */
+function load_activities_stats()
+{
+	$activities =  AM_Main::instance()->db_store->fetch_stats();
 	return $activities;
 }
