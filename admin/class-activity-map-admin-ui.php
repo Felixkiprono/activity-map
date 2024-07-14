@@ -34,7 +34,7 @@ class AM_Map_Admin_Ui
 			'manage_options',    // Capability required to access
 			'activity_map',      // Menu slug (unique identifier)
 			array($this, 'render_plugin_page'), // Callback function to render the page content
-			'dashicons-admin-generic', // Icon (optional) - Replace with appropriate dashicon class
+			'dashicons-chart-area', // Icon (optional) - Replace with appropriate dashicon class
 			6                 // Menu position (optional)
 		);
 	}
