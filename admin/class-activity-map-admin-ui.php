@@ -114,9 +114,9 @@ class AM_Map_Admin_Ui
 							$avatar = get_avatar($activity->user_id, 24);
 							$type_color = isset($type_colors[$activity->action_type]) ? $type_colors[$activity->action_type] : $type_colors['Default'];
 							$link = null;
-							$metadata  =isset($activity->metadata)? json_decode($activity->metadata):null;
+							$metadata  = isset($activity->metadata) ? json_decode($activity->metadata) : null;
 
-							if(isset($metadata->link) && $activity->action_type  === 'Attachment'){
+							if (isset($metadata->link) && ($activity->action_type  === 'Attachment' || $activity->action_type  === 'Post' || $activity->action_type  === 'Page')) {
 								$meta  = json_decode($activity->metadata);
 								$link = $meta->link;
 							}
@@ -133,14 +133,14 @@ class AM_Map_Admin_Ui
 										<span class="activity-time"><?php echo esc_html(time_ago($activity->date_time)); ?></span>
 									</div>
 									<p class="activity-description"><?php echo esc_html($activity->message); ?>
-									<br/>
-									<?php if (!is_null($link)): ?>
-										You can 
-									<a href="<?php echo esc_url($link); ?>" class="activity-link" target="_blank" rel="noopener noreferrer">
-										View 
-									</a>
-									<?php echo $activity->action_type; ?>
-									<?php endif; ?>
+										<br />
+										<?php if (!is_null($link)) : ?>
+											You can
+											<a href="<?php echo esc_url($link); ?>" class="activity-link" target="_blank" rel="noopener noreferrer">
+												View
+											</a>
+											<?php echo $activity->action_type; ?>
+										<?php endif; ?>
 
 									</p>
 
@@ -243,6 +243,6 @@ class AM_Map_Admin_Ui
 		if ('toplevel_page_activity_map' !== $hook) {
 			return;
 		}
-		wp_enqueue_style('activities-map-admin-style', plugin_dir_url(__FILE__) . 'css/activity-map-admin.css', array(), '1.0.0.1', 'all');
+		wp_enqueue_style('activities-map-admin-style', plugin_dir_url(__FILE__) . 'css/activity-map-admin.css', array(), '1.0.0', 'all');
 	}
 }

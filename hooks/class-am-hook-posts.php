@@ -35,6 +35,8 @@ class Am_Hook_Posts
             'link' => get_permalink($post->ID),
 
         ]);
+        $metadata = json_encode(['link'=>$link]);
+
 
         log_activity(array(
             'action' => 'Deleted',
@@ -44,6 +46,7 @@ class Am_Hook_Posts
             'action_id' => $post->ID,
             'action_details' => $post_details,
             'action_changes' => '',
+            'metadata'=> $metadata
         ));
     }
 
@@ -94,6 +97,9 @@ class Am_Hook_Posts
             'link' => get_permalink($post->ID),
         ]);
 
+        $link = get_permalink($post->ID);
+        $metadata = json_encode(['link'=>$link]);
+
         log_activity(array(
             'action' => $event,
             'action_type' =>  'Post',
@@ -102,6 +108,8 @@ class Am_Hook_Posts
             'action_id' => $post->ID,
             'action_details' =>  $post_details,
             'action_changes' => '',
+            'metadata'=> $metadata
+
         ));
     }
 
