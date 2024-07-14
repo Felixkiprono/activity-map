@@ -108,7 +108,6 @@ class AM_Map_Admin_Ui
 					<ul class="activity-list">
 						<?php foreach ($activities as $activity) : ?>
 							<?php
-							$user_name = "";
 							$user = get_user_by('id', $activity->user_id);
 							$user_name = $user ? $user->user_nicename : "";
 							$avatar = get_avatar($activity->user_id, 24);
@@ -130,8 +129,7 @@ class AM_Map_Admin_Ui
 											</span>
 											<h3 class="activity-title"><?php echo esc_html(ucfirst($activity->action_title)); ?></h3>
 										</div>
-										<span class="activity-time"><?php echo esc_html(ucfirst($activity->action)); ?></span>
-
+										<span class="activity-time"><?php echo esc_html(ucfirst($activity->date_time)); ?></span>
 									</div>
 									<p class="activity-description"><?php echo esc_html($activity->message); ?>
 										<br />
