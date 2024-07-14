@@ -34,8 +34,8 @@ class AM_Map_Admin_Ui
 			'manage_options',    // Capability required to access
 			'activity_map',      // Menu slug (unique identifier)
 			array($this, 'render_plugin_page'), // Callback function to render the page content
-			'dashicons-chart-area', // Icon (optional) - Replace with appropriate dashicon class
-			6                 // Menu position (optional)
+			'dashicons-chart-area',
+			6  // Menu position (optional)
 		);
 	}
 
@@ -137,9 +137,10 @@ class AM_Map_Admin_Ui
 										<?php if (!is_null($link)) : ?>
 											You can
 											<a href="<?php echo esc_url($link); ?>" class="activity-link" target="_blank" rel="noopener noreferrer">
-												View
+												"View 
+												<?php echo $activity->action_type; ?>"
 											</a>
-											<?php echo $activity->action_type; ?>
+											
 										<?php endif; ?>
 
 									</p>
@@ -168,10 +169,17 @@ class AM_Map_Admin_Ui
 		</div>
 	<?php
 	}
-
+	
+	/**
+	 * render_activity_chart
+	 *
+	 * @return void
+	 */
 	function render_activity_chart()
 	{
 		$activity_data = load_activities_stats();
+		if(!$activity_data)
+		return;
 	?>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
