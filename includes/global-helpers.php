@@ -39,15 +39,28 @@ function current_wp_user_id()
     return $user_id;
 }
 
-function profile_link($user_id, $user_name)
+function get_user_object_data($user_id)
 {
-    $username = $user_name;
-    if ($user_id == current_wp_user_id()) {
-        $username = "You";
+    $user_info = get_userdata($user_id);
+    if ($user_info) {
+        return $user_info;
     }
-    $specific_public_profile_link = get_author_posts_url($user_id);
-    if ($specific_public_profile_link) {
-        return "<a href='" . esc_url($specific_public_profile_link) . "'>$username</a>";
+}
+
+function public_profile_link($user_id)
+{
+    $user = get_user_object_data($user_id);
+    if ($user) {
+        $username = ucfirst($user->user_nicename);
+        if ($user_id == current_wp_user_id()) {
+            $username = "You";
+        } else {
+            $username = "$username ($user->user_email)";
+        }
+        $specific_admin_profile_link = get_edit_user_link($user_id);
+        if ($specific_admin_profile_link && $username) {
+            return "<a href='" . esc_url($specific_admin_profile_link) . "'>$username</a>";
+        }
     }
     return null;
 }

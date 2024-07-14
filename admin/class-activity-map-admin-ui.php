@@ -144,10 +144,12 @@ class AM_Map_Admin_Ui
 									</p>
 
 									<div class="activity-meta">
+									<?php if ($activity->user_id>0) : ?>
 										<span class="activity-user">
 											<?php echo $avatar; ?>
-											<?php echo profile_link($activity->user_id, ucfirst($user_name)); ?>
+											<?php echo public_profile_link($activity->user_id); ?>
 										</span>
+										<?php endif; ?>
 										<span class="activity-action"><?php echo esc_html(ucfirst($activity->action)); ?></span>
 									</div>
 								</div>
