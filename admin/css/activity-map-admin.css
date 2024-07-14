@@ -1,4 +1,4 @@
-/**
+ /**
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
@@ -7,11 +7,7 @@
     background-color: white;
     padding: 15px;
     border-bottom: 1px solid #ccc;
-    position: fixed;
-    top: 32px;
-    /* Adjust this value based on the WordPress admin bar height */
-    left: 160px;
-    /* Adjust this value based on the WordPress admin menu width */
+    top: 32px; 
     right: 0;
     z-index: 100;
     display: flex;
@@ -47,21 +43,15 @@
     text-decoration: none;
 }
 
-.settings-button:hover {
+.activity-map-settings-button:hover {
     background-color: #f6f7f7;
 }
 
-.wrap {
-    margin-top: 90px;
 
-    /* Adjust this value to account for the fixed header */
-}
 
 .wrap {
     max-width: 800px;
     margin: 0 auto;
-    /* padding: 20px; */
-    /* padding: 2px 6px; */
     margin-top: 90px;
 }
 
@@ -87,7 +77,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .activity-title-container {
@@ -183,42 +173,3 @@
     border-color: #3b82f6;
 }
 
-.filter-search-bar {
-    background-color: #fff;
-    padding: 15px;
-    border-bottom: 1px solid #ccc;
-    margin-top: 63px; /* Adjust based on your header bar height */
-    position: fixed;
-    left: 160px; /* Adjust based on your admin menu width */
-    right: 0;
-    z-index: 99;
-}
-
-.filter-search-bar form {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-box,
-.filter-box,
-.submit-box {
-    margin-right: 10px;
-}
-
-.search-box input[type="search"] {
-    width: 300px;
-}
-
-.filter-box select {
-    width: 150px;
-}
-
-.submit-box .button {
-    margin-top: 1px;
-}
-
-/* Adjust the main content wrapper to account for the new filter bar */
-.wrap {
-    margin-top: 130px; /* Adjust this value based on the combined height of your header and filter bars */
-}
