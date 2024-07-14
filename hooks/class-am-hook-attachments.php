@@ -15,9 +15,16 @@ class Am_Hook_Attachments
         if (is_null($id)) {
             return;
         }
+
         $attachment = get_post($id);
+
         $meta = json_encode($attachment);
+
         $original_metadata = json_encode(wp_get_attachment_metadata($id));
+
+        $link =  get_permalink($attachment->ID);
+
+        $metadata = json_encode(['link'=>$link]);
 
         log_activity(array(
             'action' => 'Uploaded',
@@ -27,6 +34,7 @@ class Am_Hook_Attachments
             'action_id' => $id,
             'action_details' => $original_metadata,
             'action_changes' => '',
+            'metadata'=> $metadata 
         ));
     }
 

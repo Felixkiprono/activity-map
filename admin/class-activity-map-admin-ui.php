@@ -113,8 +113,13 @@ class AM_Map_Admin_Ui
 							$user_name = $user ? $user->user_nicename : "";
 							$avatar = get_avatar($activity->user_id, 24);
 							$type_color = isset($type_colors[$activity->action_type]) ? $type_colors[$activity->action_type] : $type_colors['Default'];
-							$action_details = ($activity->action_type ? 'Attachment' : json_decode($activity->action_details));
+							$link = null;
+							$metadata  =isset($activity->metadata)? json_decode($activity->metadata):null;
 
+							if(isset($metadata->link) && $activity->action_type  === 'Attachment'){
+								$meta  = json_decode($activity->metadata);
+								$link = $meta->link;
+							}
 							?>
 							<li class="activity-item">
 								<div class="activity-content">
@@ -128,6 +133,15 @@ class AM_Map_Admin_Ui
 										<span class="activity-time"><?php echo esc_html(time_ago($activity->date_time)); ?></span>
 									</div>
 									<p class="activity-description"><?php echo esc_html($activity->message); ?>
+									<br/>
+									<?php if (!is_null($link)): ?>
+										You can 
+									<a href="<?php echo esc_url($link); ?>" class="activity-link" target="_blank" rel="noopener noreferrer">
+										View 
+									</a>
+									<?php echo $activity->action_type; ?>
+									<?php endif; ?>
+
 									</p>
 
 									<div class="activity-meta">
