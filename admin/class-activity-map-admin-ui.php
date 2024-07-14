@@ -130,17 +130,17 @@ class AM_Map_Admin_Ui
 											</span>
 											<h3 class="activity-title"><?php echo esc_html(ucfirst($activity->action_title)); ?></h3>
 										</div>
-										<span class="activity-time"><?php echo esc_html(time_ago($activity->date_time)); ?></span>
+										<span class="activity-time"><?php echo esc_html(ucfirst($activity->action)); ?></span>
+
 									</div>
 									<p class="activity-description"><?php echo esc_html($activity->message); ?>
 										<br />
 										<?php if (!is_null($link)) : ?>
 											You can
 											<a href="<?php echo esc_url($link); ?>" class="activity-link" target="_blank" rel="noopener noreferrer">
-												"View 
+												"View
 												<?php echo $activity->action_type; ?>"
 											</a>
-											
 										<?php endif; ?>
 
 									</p>
@@ -159,17 +159,17 @@ class AM_Map_Admin_Ui
 				</div>
 				<div class="my-column">
 					<div class="chart-card">
-						<h2>Activity Summary</h2>
+						<h2>Activity Map Summary</h2>
 						<?php $this->render_activity_chart(); ?>
 						<canvas id="activityChart"></canvas>
-						<p>This chart summarizes the recent activity on your site.</p>
+						<p>This chart summarizes the recent Top 5 activities on your WP site.</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	<?php
 	}
-	
+
 	/**
 	 * render_activity_chart
 	 *
@@ -178,8 +178,8 @@ class AM_Map_Admin_Ui
 	function render_activity_chart()
 	{
 		$activity_data = load_activities_stats();
-		if(!$activity_data)
-		return;
+		if (!$activity_data)
+			return;
 	?>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
@@ -189,7 +189,7 @@ class AM_Map_Admin_Ui
 					data: {
 						labels: <?php echo json_encode($activity_data['labels']); ?>,
 						datasets: [{
-							label: 'Activity Count',
+							label: 'Count',
 							data: <?php echo json_encode($activity_data['data']); ?>,
 							backgroundColor: [
 								'rgba(255, 99, 132, 0.6)',
@@ -221,7 +221,7 @@ class AM_Map_Admin_Ui
 							x: {
 								title: {
 									display: true,
-									text: 'Activity Type'
+									text: 'Type'
 								}
 							}
 						},
@@ -231,7 +231,7 @@ class AM_Map_Admin_Ui
 							},
 							title: {
 								display: true,
-								text: 'Top 5 Activity Types'
+								text: 'Top 5 Types of Activities'
 							}
 						}
 					}
