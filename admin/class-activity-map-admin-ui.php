@@ -129,7 +129,7 @@ class AM_Map_Admin_Ui
 											</span>
 											<h3 class="activity-title"><?php echo esc_html(ucfirst($activity->action_title)); ?></h3>
 										</div>
-										<span class="activity-time"><?php echo esc_html(ucfirst($activity->date_time)); ?></span>
+										<span class="activity-time"><?php echo esc_html(ucfirst(time_ago( $activity->date_time))); ?></span>
 									</div>
 									<p class="activity-description"><?php echo esc_html($activity->message); ?>
 										<br />
@@ -146,7 +146,7 @@ class AM_Map_Admin_Ui
 									<div class="activity-meta">
 										<span class="activity-user">
 											<?php echo $avatar; ?>
-											<?php echo esc_html(ucfirst($user_name)); ?>
+											<?php echo profile_link($activity->user_id, ucfirst($user_name)); ?>
 										</span>
 										<span class="activity-action"><?php echo esc_html(ucfirst($activity->action)); ?></span>
 									</div>
