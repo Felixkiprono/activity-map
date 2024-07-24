@@ -1,6 +1,6 @@
 <h1>Activity Map</h1> 
 
- **Contributors:** [celestialcodex] (https://github.com/celestialcodex) <br>
+ **Contributors:** [celestialcodex](https://github.com/celestialcodex) <br>
  **Tags:** Activity,Record,Audit,Security <br>
  **Requires at least:** 6.0 <br>
  **Tested up to:** 6.5 <br>
